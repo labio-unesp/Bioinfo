@@ -1,0 +1,15 @@
+###### Library #####
+library(ComplexHeatmap)
+library(circlize)
+library(RColorBrewer)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(ggpmisc)
+library(purrr)
+library(factoextra)
+
+
+
+#GSVA Score - ALL
+CompHeatMAP_ALL <- CompList(GSVA_list) #GSVA_list é uma lista com output do GSVA
