@@ -1,0 +1,50 @@
+CompList <- function(L){
+  Mat <- names(L[[1]]) #Nomes dos materiais
+  T1 <- NULL #Tabela GSVA para Tibble
+  MatComp <- NULL #
+  T2 <- NULL
+  chi <- 0
+  df <- NULL
+  df1 <- NULL
+  df2 <- NULL
+  T3 <- NULL
+  df3 <- NULL
+  df4 <- NULL
+  tab <- NULL
+  tab1 <- NULL
+  
+  for(k in 1:length(L)){
+    T1 <- as_tibble(L[[k]])
+    
+    for(i in 1:ncol(L[[k]])){
+      for(j in 1:ncol(L[[k]])){
+        
+        T2 <- select(T1, Mat[i], Mat[j])
+        T2 <- as.data.frame(T2)
+        if(i == j){
+          T2 <- cbind(T2,T2)
+        }
+        chi <- ((mean(T2[,1]) - mean(T2[,2]))/(1-abs(sd(T2[,1])-sd(T2[,2]))))^2
+        tab <- data.frame(Group1 = Mat[i], Group2 = Mat[j], Chi2 = chi)
+        df <- rbind(df,tab)
+      }
+      df1 <- rbind(df1,df) 
+    }
+    df2 <- rbind(df2,df1)
+  }
+  
+  for(i in 1:length(Mat)){
+    for(j in 1:length(Mat)){
+      T3 <- filter(df2, Group1 == Mat[i], Group2 == Mat[j])
+      S <- sqrt(sum(T3$Chi2)/nrow(T3))
+      
+      df3 <- data.frame(Group1 = Mat[i],Group2 = Mat[j],Chi = S)
+      tab1 <- rbind(tab1,df3)
+    }
+    df4 <- rbind(df4,tab1)
+  }
+  
+  df4 <- df4[!duplicated(df4[,c(1:2)]),]
+  
+  return(df4)
+}
